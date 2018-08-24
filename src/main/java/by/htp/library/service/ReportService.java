@@ -1,8 +1,8 @@
-package by.htp.library.dao;
+package by.htp.library.service;
 
 import java.util.Map;
 
-public interface ReportDAO {
+public interface ReportService {
 
 	public Map<Integer, Integer> getEmployeesBooks(int count);
 

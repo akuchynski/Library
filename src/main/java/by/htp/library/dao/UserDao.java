@@ -3,12 +3,12 @@ package by.htp.library.dao;
 import java.util.List;
 
 import by.htp.library.bean.Employee;
-import by.htp.library.bean.ROLE;
 import by.htp.library.bean.User;
+import by.htp.library.dao.exception.DAOException;
 
-public interface UserDao extends BaseDao<User> {
+public interface UserDAO extends BaseDAO<User> {
 
-	public void createUserByEmployee(User user, Employee employee);
+	public void createUserByEmployee(User user, Employee employee) throws DAOException;
 
 	public User readByLogin(String title);
 
@@ -16,8 +16,8 @@ public interface UserDao extends BaseDao<User> {
 
 	public boolean userIsExist(String login, String password);
 
-	public ROLE getRoleByLoginPassword(String login, String password);
-	
-	public boolean userIsActivated(String login);
+	public String getRoleByLoginPassword(String login, String password);
+
+	public boolean userIsActivated(String login) throws DAOException;
 
 }

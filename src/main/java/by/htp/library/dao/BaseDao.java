@@ -4,7 +4,7 @@ import java.util.List;
 
 import by.htp.library.bean.Entity;
 
-public interface BaseDao<T extends Entity> {
+public interface BaseDAO<T extends Entity> {
 
 	public void create(T entity);
 

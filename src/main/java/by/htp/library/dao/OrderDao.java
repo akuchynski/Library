@@ -4,7 +4,7 @@ import java.util.List;
 
 import by.htp.library.bean.Order;
 
-public interface OrderDao extends BaseDao<Order> {
+public interface OrderDAO extends BaseDAO<Order> {
 
 	public List<Order> readOrdersByStatus(String status);
 

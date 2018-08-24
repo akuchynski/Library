@@ -4,7 +4,7 @@ import java.util.List;
 
 import by.htp.library.bean.Employee;
 
-public interface EmployeeDao extends BaseDao<Employee> {
+public interface EmployeeDAO extends BaseDAO<Employee> {
 
 	public List<Employee> readBySurname(String title);
 

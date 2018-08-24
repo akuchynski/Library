@@ -3,32 +3,22 @@ package by.htp.library.bean;
 public class User extends Entity {
 
 	private static final long serialVersionUID = 1L;
-	private int id;
 	private String login;
 	private String password;
 	private String email;
-	private ROLE role;
+	private String role;
 	private boolean active;
 
 	public User() {
 	}
 
-	public User(int id, String login, String password, String email, ROLE role, boolean active) {
+	public User(String login, String password, String email, String role, boolean active) {
 		super();
-		this.id = id;
 		this.login = login;
 		this.password = password;
 		this.email = email;
 		this.role = role;
 		this.active = active;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getLogin() {
@@ -55,11 +45,11 @@ public class User extends Entity {
 		this.email = email;
 	}
 
-	public ROLE getRole() {
+	public String getRole() {
 		return role;
 	}
 
-	public void setRole(ROLE role) {
+	public void setRole(String role) {
 		this.role = role;
 	}
 	
@@ -77,7 +67,6 @@ public class User extends Entity {
 		int result = 1;
 		result = prime * result + (active ? 1231 : 1237);
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
-		result = prime * result + id;
 		result = prime * result + ((login == null) ? 0 : login.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + ((role == null) ? 0 : role.hashCode());
@@ -100,8 +89,6 @@ public class User extends Entity {
 				return false;
 		} else if (!email.equals(other.email))
 			return false;
-		if (id != other.id)
-			return false;
 		if (login == null) {
 			if (other.login != null)
 				return false;
@@ -112,14 +99,17 @@ public class User extends Entity {
 				return false;
 		} else if (!password.equals(other.password))
 			return false;
-		if (role != other.role)
+		if (role == null) {
+			if (other.role != null)
+				return false;
+		} else if (!role.equals(other.role))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", login=" + login + ", password=" + password + ", email=" + email + ", role=" + role
-				+ ", active=" + active + "]";
+		return "User [login=" + login + ", password=" + password + ", email=" + email + ", role=" + role + ", active="
+				+ active + "]";
 	}
 }

@@ -2,6 +2,8 @@ package by.htp.library.bean;
 
 import java.util.Date;
 
+import by.htp.library.util.STATUS;
+
 public class Order extends Entity {
 
 	private static final long serialVersionUID = 1L;
@@ -106,5 +108,4 @@ public class Order extends Entity {
 		return "Order [bookId=" + bookId + ", emplId=" + emplId + ", days=" + days + ", date=" + date + ", status="
 				+ status + ", id=" + id + "]";
 	}
-
 }
