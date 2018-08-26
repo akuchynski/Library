@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import by.htp.library.bean.Book;
+import by.htp.library.dao.exception.DAOException;
 import by.htp.library.dao.impl.BookDAOImpl;
 import by.htp.library.dao.util.ConnectionPool;
 
@@ -19,7 +20,11 @@ public class BookDaoTest {
 
 
 	public void initDefaultDBConnection() {
-		Connection connection = ConnectionPool.getConnection();
+		try {
+			Connection connection = ConnectionPool.getConnection();
+		} catch (DAOException e) {
+			e.printStackTrace();
+		}
 		System.out.println("BeforeClass: connected to DB");
 	}
 
@@ -42,7 +47,7 @@ public class BookDaoTest {
 	}
 
 
-	public void testRecievedCorrectBookCount() {
+	public void testRecievedCorrectBookCount() throws DAOException {
 
 		List<Book> actualList = dao.readAll();
 
@@ -57,7 +62,12 @@ public class BookDaoTest {
 	}
 
 	public void closeDefaultDBConnection() {
-		ConnectionPool.putConnection(connection);
+		try {
+			ConnectionPool.putConnection(connection);
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		System.out.println("AfterClass: disconnect DB");
 	}
 }

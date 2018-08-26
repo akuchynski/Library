@@ -25,5 +25,5 @@ public interface BookService {
 
 	public void putOneBook(int id) throws ServiceException;
 
-	public List<Book> getByTitle(String title);
+	public List<Book> getByTitle(String title) throws ServiceException;
 }

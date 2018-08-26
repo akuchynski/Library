@@ -12,6 +12,7 @@ import by.htp.library.bean.Employee;
 import by.htp.library.bean.User;
 import by.htp.library.dao.EmployeeDAO;
 import by.htp.library.dao.UserDAO;
+import by.htp.library.dao.exception.DAOException;
 import by.htp.library.dao.util.ConnectionPool;
 
 public class UserDAOImpl implements UserDAO {
@@ -19,15 +20,14 @@ public class UserDAOImpl implements UserDAO {
 	private static final String SQL_CREATE_USER = "INSERT INTO user (user_id, login, email, password) VALUES (?, ?, ?, ?)";
 	private static final String SQL_READ_USER_BY_ID = "SELECT * FROM user WHERE user_id = ?";
 	private static final String SQL_READ_USER_BY_LOGIN = "SELECT * FROM user WHERE login = ?";
+	private static final String SQL_READ_USER_BY_LOGIN_PASSWORD = "SELECT * FROM user WHERE login = ? AND password = ?";
 	private static final String SQL_READ_USERS = "SELECT * FROM user";
 	private static final String SQL_READ_LAST_USERS = "SELECT * FROM user order by user_id desc limit ?";
-	private static final String SQL_READ_USER_BY_LOGIN_PASSWORD = "SELECT * FROM user WHERE login = ? AND password = ?";
-	private static final String SQL_READ_USER_ROLE_BY_LOGIN_PASSWORD = "SELECT role FROM user WHERE login = ? AND password = ?";
 	private static final String SQL_UPDATE_USER_BY_ID = "UPDATE user SET email = ?, password = ?, active = ? WHERE user_id = ?";
 	private static final String SQL_DELETE_USER_BY_ID = "DELETE FROM user WHERE user_id = ?";
 
 	@Override
-	public void create(User user) {
+	public void create(User user) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 
@@ -43,14 +43,14 @@ public class UserDAOImpl implements UserDAO {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
 	}
 
 	@Override
-	public void createUserByEmployee(User user, Employee employee) {
+	public void createUserByEmployee(User user, Employee employee) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 
@@ -69,14 +69,14 @@ public class UserDAOImpl implements UserDAO {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
 	}
 
 	@Override
-	public User read(int id) {
+	public User read(int id) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 		User user = new User();
@@ -97,7 +97,7 @@ public class UserDAOImpl implements UserDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -106,7 +106,7 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public User readByLogin(String login) {
+	public User readByLogin(String login) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 		User user = new User();
@@ -127,7 +127,38 @@ public class UserDAOImpl implements UserDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
+		}
+
+		ConnectionPool.putConnection(connection);
+
+		return user;
+	}
+	
+	@Override
+	public User readByLoginPassword(String login, String password) throws DAOException {
+		Connection connection = ConnectionPool.getConnection();
+		User user = null;
+		
+		try {
+
+			PreparedStatement ps = connection.prepareStatement(SQL_READ_USER_BY_LOGIN_PASSWORD);
+			ps.setString(1, login);
+			ps.setString(2, password);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				user = new User();
+				user.setId(rs.getInt("user_id"));
+				user.setLogin(rs.getString("login"));
+				user.setPassword(rs.getString("password"));
+				user.setEmail(rs.getString("email"));
+				user.setRole(rs.getString("role"));
+				user.setActive(rs.getBoolean("active"));
+			}
+
+		} catch (SQLException e) {
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -135,7 +166,7 @@ public class UserDAOImpl implements UserDAO {
 		return user;
 	}
 
-	public List<User> readAll() {
+	public List<User> readAll() throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 		List<User> users = new ArrayList<>();
@@ -158,7 +189,7 @@ public class UserDAOImpl implements UserDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -166,7 +197,7 @@ public class UserDAOImpl implements UserDAO {
 		return users;
 	}
 
-	public List<User> readLastUsers(int count) {
+	public List<User> readLastUsers(int count) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 		List<User> users = new ArrayList<>();
@@ -190,7 +221,7 @@ public class UserDAOImpl implements UserDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -198,7 +229,7 @@ public class UserDAOImpl implements UserDAO {
 		return users;
 	}
 
-	public boolean userIsExist(String login, String password) {
+	public boolean userIsExist(String login, String password) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 		boolean result = false;
@@ -215,7 +246,7 @@ public class UserDAOImpl implements UserDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -224,7 +255,7 @@ public class UserDAOImpl implements UserDAO {
 	}
 	
 	@Override
-	public boolean userIsActivated(String login) {
+	public boolean userIsActivated(String login) throws DAOException {
 		
 		Connection connection = ConnectionPool.getConnection();
 		boolean activate = false;
@@ -242,43 +273,16 @@ public class UserDAOImpl implements UserDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
 
 		return activate;
 	}
-	
 
 	@Override
-	public String getRoleByLoginPassword(String login, String password) {
-
-		Connection connection = ConnectionPool.getConnection();
-		String role = "";
-
-		try {
-
-			PreparedStatement ps = connection.prepareStatement(SQL_READ_USER_ROLE_BY_LOGIN_PASSWORD);
-			ps.setString(1, login);
-			ps.setString(2, password);
-			ResultSet rs = ps.executeQuery();
-
-			while (rs.next()) {
-				role = rs.getString("role");
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		ConnectionPool.putConnection(connection);
-
-		return role;
-	}
-
-	@Override
-	public void update(int id, User entity) {
+	public void update(int id, User entity) throws DAOException {
 		
 		Connection connection = ConnectionPool.getConnection();
 
@@ -294,7 +298,7 @@ public class UserDAOImpl implements UserDAO {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -302,7 +306,7 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public void delete(int id) {
+	public void delete(int id) throws DAOException {
 		
 		Connection connection = ConnectionPool.getConnection();
 
@@ -314,7 +318,7 @@ public class UserDAOImpl implements UserDAO {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);

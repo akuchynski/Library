@@ -10,6 +10,7 @@ import java.util.List;
 
 import by.htp.library.bean.Employee;
 import by.htp.library.dao.EmployeeDAO;
+import by.htp.library.dao.exception.DAOException;
 import by.htp.library.dao.util.ConnectionPool;
 
 public class EmployeeDAOImpl implements EmployeeDAO {
@@ -23,7 +24,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	private static final String SQL_UPDATE_EMPLOYEE_BY_ID = "UPDATE employee SET name = ?, surname = ?, year = ?  WHERE emp_id = ?";
 	private static final String SQL_DELETE_EMPLOYEE_BY_ID = "DELETE FROM employee WHERE emp_id = ?";
 
-	public void create(Employee entity) {
+	public void create(Employee entity) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 
@@ -38,14 +39,14 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
 
 	}
 
-	public List<Employee> readAll() {
+	public List<Employee> readAll() throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 		List<Employee> employees = new ArrayList<>();
@@ -67,7 +68,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -75,7 +76,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 		return employees;
 	}
 
-	public List<Employee> readByNameSurname(String fullName) {
+	public List<Employee> readByNameSurname(String fullName) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 		List<Employee> employees = new ArrayList<>();
@@ -98,7 +99,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -106,7 +107,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 		return employees;
 	}
 
-	public Employee read(int id) {
+	public Employee read(int id) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 		Employee employee = new Employee();
@@ -125,7 +126,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -134,7 +135,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	}
 
 	@Override
-	public int readIdEmployee(Employee employee) {
+	public int readIdEmployee(Employee employee) throws DAOException {
 		
 		Connection connection = ConnectionPool.getConnection();
 		int id = 0;
@@ -152,7 +153,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -160,7 +161,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 		return id;
 	}
 
-	public List<Employee> readBySurname(String surname) {
+	public List<Employee> readBySurname(String surname) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 		List<Employee> employees = new ArrayList<>();
@@ -182,7 +183,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -190,7 +191,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 		return employees;
 	}
 
-	public void update(int id, Employee entity) {
+	public void update(int id, Employee entity) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 
@@ -206,13 +207,13 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
 	}
 
-	public void delete(int id) {
+	public void delete(int id) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 
@@ -224,7 +225,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);

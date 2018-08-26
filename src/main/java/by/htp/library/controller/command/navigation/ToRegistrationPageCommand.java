@@ -10,15 +10,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import by.htp.library.controller.command.Command;
+import by.htp.library.controller.exception.ControllerException;
 import by.htp.library.util.ConfigManager;
 
 public class ToRegistrationPageCommand extends Command {
-	protected static final Logger logger = LoggerFactory.getLogger(ToRegistrationPageCommand.class);
+	private static final Logger logger = LoggerFactory.getLogger(ToRegistrationPageCommand.class);
 
 	@Override
-	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		logger.info(request.getMethod() + " forward - command : " + request.getParameter(PARAM_COMMAND_NAME));
-		request.getRequestDispatcher(ConfigManager.getProperty(FORWARD_REGISTRATION)).forward(request, response);
+	public void execute(HttpServletRequest request, HttpServletResponse response) throws ControllerException {
+		logger.info(request.getMethod() + " command name : " + request.getParameter(PARAM_COMMAND_NAME));
+		try {
+			request.getRequestDispatcher(ConfigManager.getProperty(FORWARD_REGISTRATION)).forward(request, response);
+		} catch (ServletException | IOException e) {
+			throw new ControllerException(e);
+		}
 	}
 }

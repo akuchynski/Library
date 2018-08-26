@@ -10,6 +10,7 @@ import java.util.List;
 
 import by.htp.library.bean.Book;
 import by.htp.library.dao.BookDAO;
+import by.htp.library.dao.exception.DAOException;
 import by.htp.library.dao.util.ConnectionPool;
 
 public class BookDAOImpl implements BookDAO {
@@ -24,7 +25,7 @@ public class BookDAOImpl implements BookDAO {
 	private static final String SQL_UPDATE_BOOK_BY_ID = "UPDATE book SET title = ?, description = ?, author = ?, year = ?, count = ? WHERE book_id = ?";
 	private static final String SQL_DELETE_BOOK_BY_ID = "DELETE FROM book WHERE book_id = ?";
 
-	public void create(Book entity) {
+	public void create(Book entity) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 
@@ -41,13 +42,13 @@ public class BookDAOImpl implements BookDAO {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
 	}
 
-	public List<Book> readAll() {
+	public List<Book> readAll() throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 		List<Book> books = new ArrayList<>();
@@ -69,7 +70,7 @@ public class BookDAOImpl implements BookDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -77,7 +78,7 @@ public class BookDAOImpl implements BookDAO {
 		return books;
 	}
 	
-	public List<Book> readAvailableBooks() {
+	public List<Book> readAvailableBooks() throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 		List<Book> books = new ArrayList<>();
@@ -102,7 +103,7 @@ public class BookDAOImpl implements BookDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -110,7 +111,7 @@ public class BookDAOImpl implements BookDAO {
 		return books;
 	}
 
-	public List<Book> readLastBooks(int quantity) {
+	public List<Book> readLastBooks(int quantity) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 		List<Book> books = new ArrayList<>();
@@ -133,7 +134,7 @@ public class BookDAOImpl implements BookDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -141,7 +142,7 @@ public class BookDAOImpl implements BookDAO {
 		return books;
 	}
 
-	public Book read(int id) {
+	public Book read(int id) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 		Book book = new Book();
@@ -162,7 +163,7 @@ public class BookDAOImpl implements BookDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -170,7 +171,7 @@ public class BookDAOImpl implements BookDAO {
 		return book;
 	}
 
-	public List<Book> readByTitle(String title) {
+	public List<Book> readByTitle(String title) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 		List<Book> books = new ArrayList<>();
@@ -193,7 +194,7 @@ public class BookDAOImpl implements BookDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -202,7 +203,7 @@ public class BookDAOImpl implements BookDAO {
 	}
 	
 	@Override
-	public void incrementBookQuantity(int id) {
+	public void incrementBookQuantity(int id) throws DAOException {
 		
 		Connection connection = ConnectionPool.getConnection();
 
@@ -214,7 +215,7 @@ public class BookDAOImpl implements BookDAO {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -222,7 +223,7 @@ public class BookDAOImpl implements BookDAO {
 	}
 
 	@Override
-	public void decrementBookQuantity(int id) {
+	public void decrementBookQuantity(int id) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 
@@ -234,14 +235,14 @@ public class BookDAOImpl implements BookDAO {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
 		
 	}
 
-	public void update(int id, Book entity) {
+	public void update(int id, Book entity) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 
@@ -259,13 +260,13 @@ public class BookDAOImpl implements BookDAO {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
 	}
 
-	public void delete(int id) {
+	public void delete(int id) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 
@@ -277,7 +278,7 @@ public class BookDAOImpl implements BookDAO {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);

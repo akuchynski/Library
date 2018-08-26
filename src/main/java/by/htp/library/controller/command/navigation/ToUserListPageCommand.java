@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import by.htp.library.bean.Employee;
 import by.htp.library.bean.User;
 import by.htp.library.controller.command.Command;
+import by.htp.library.controller.exception.ControllerException;
 import by.htp.library.service.EmployeeService;
 import by.htp.library.service.ServiceFactory;
 import by.htp.library.service.UserService;
@@ -23,27 +23,27 @@ import by.htp.library.service.exception.ServiceException;
 import by.htp.library.util.ConfigManager;
 
 public class ToUserListPageCommand extends Command {
-	protected static final Logger logger = LoggerFactory.getLogger(ToUserListPageCommand.class);
+	private static final Logger logger = LoggerFactory.getLogger(ToUserListPageCommand.class);
+	private ServiceFactory serviceFactory = ServiceFactory.getInstance();
+	private UserService userService = serviceFactory.getUserService();
+	private EmployeeService employeeService = serviceFactory.getEmployeeService();
 
 	@Override
-	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		HttpSession session = request.getSession();
-
-		ServiceFactory serviceFactory = ServiceFactory.getInstance();
-		UserService userService = serviceFactory.getUserService();
-		EmployeeService employeeService = serviceFactory.getEmployeeService();
-
+	public void execute(HttpServletRequest request, HttpServletResponse response) throws ControllerException {
+		logger.info(request.getMethod() + " command name : " + request.getParameter(PARAM_COMMAND_NAME));
 		try {
 			List<User> userList = userService.getAllUsers();
 			List<Employee> employeeList = employeeService.getAllEmployees();
-			Map<Integer, Employee> employeeMap = employeeList.stream().collect(Collectors.toMap(Employee::getId, item -> item));
+			Map<Integer, Employee> employeeMap = employeeList.stream()
+					.collect(Collectors.toMap(Employee::getId, item -> item));
 			request.setAttribute(ATTR_EMPLOYEE_MAP, employeeMap);
 			request.setAttribute(ATTR_USER_LIST, userList);
-		} catch (ServiceException e) {
-			e.printStackTrace();
-		}
 
-		request.getRequestDispatcher(session.getAttribute(ATTR_MENU_PATH) + ConfigManager.getProperty(FORWARD_USER_LIST)).forward(request, response);
+			request.getRequestDispatcher(
+					request.getSession().getAttribute(ATTR_MENU_PATH) + ConfigManager.getProperty(FORWARD_USER_LIST))
+					.forward(request, response);
+		} catch (ServletException | ServiceException | IOException e) {
+			throw new ControllerException(e);
+		}
 	}
 }

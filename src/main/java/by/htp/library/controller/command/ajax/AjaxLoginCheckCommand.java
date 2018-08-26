@@ -3,7 +3,6 @@ package by.htp.library.controller.command.ajax;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -11,30 +10,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import by.htp.library.controller.command.Command;
+import by.htp.library.controller.exception.ControllerException;
 import by.htp.library.service.ServiceFactory;
 import by.htp.library.service.UserService;
 import by.htp.library.service.exception.ServiceException;
 
 public class AjaxLoginCheckCommand extends Command {
-	protected static final Logger logger = LoggerFactory.getLogger(AjaxLoginCheckCommand.class);
+	private static final Logger logger = LoggerFactory.getLogger(AjaxLoginCheckCommand.class);
+	private ServiceFactory serviceFactory = ServiceFactory.getInstance();
+	private UserService userService = serviceFactory.getUserService();
 
 	@Override
-	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		ServiceFactory serviceFactory = ServiceFactory.getInstance();
-		UserService userService = serviceFactory.getUserService();
-
-		String login = request.getParameter("loginname");
-		PrintWriter out = response.getWriter();
-
+	public void execute(HttpServletRequest request, HttpServletResponse response) throws ControllerException {
+		logger.info(request.getMethod() + " command name : " + request.getParameter(PARAM_COMMAND_NAME));
 		try {
+			String login = request.getParameter("loginname");
+			PrintWriter out = response.getWriter();
+			
 			if (userService.getUserByLogin(login).getLogin() != null) {
 				out.print("false");
 			} else {
 				out.print("true");
 			}
-		} catch (ServiceException e) {
-			e.printStackTrace();
+		} catch (ServiceException | IOException e) {
+			throw new ControllerException(e);
 		}
 	}
 }

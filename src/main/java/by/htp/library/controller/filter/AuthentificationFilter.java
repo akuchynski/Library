@@ -40,21 +40,22 @@ public class AuthentificationFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
 			throws IOException, ServletException {
+
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
-
-		String command = request.getParameter(PARAM_COMMAND);
-		User currentUser = (User)request.getSession().getAttribute(ATTR_USER);
-		
 		logger.info(request.getMethod() + " : command parameter : " + request.getParameter(PARAM_COMMAND));
 
-		if (currentUser != null && !currentUser.isActive()) {
+		String command = request.getParameter(PARAM_COMMAND);
+		User currentUser = (User) request.getSession().getAttribute(ATTR_USER);
+
+		if ((currentUser != null && currentUser.isActive()) || command.matches(LOGIN_COMMAND)
+				|| command.matches(REG_PAGE_COMMAND) || command.matches(REG_COMMAND)
+				|| command.matches(LANG_CHANGE_COMMAND) || command.contains(AJAX_COMMANDS)
+				|| command.matches(LOGOUT_COMMAND)) {
+			chain.doFilter(req, res);
+		} else if (currentUser != null && !currentUser.isActive()) {
 			request.getSession().invalidate();
 			request.getRequestDispatcher(ConfigManager.getProperty(FORWARD_DEACTIVE)).forward(request, response);
-		} else if (command.matches(LOGIN_COMMAND) || command.matches(REG_PAGE_COMMAND) || command.matches(REG_COMMAND)
-				|| command.matches(LANG_CHANGE_COMMAND) || command.contains(AJAX_COMMANDS)
-				|| command.matches(LOGOUT_COMMAND) || currentUser != null) {
-			chain.doFilter(req, res);
 		} else {
 			response.sendRedirect(REDIRECT_INDEX);
 		}

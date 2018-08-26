@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +17,7 @@ import by.htp.library.bean.Employee;
 import by.htp.library.bean.Order;
 import by.htp.library.bean.User;
 import by.htp.library.controller.command.Command;
+import by.htp.library.controller.exception.ControllerException;
 import by.htp.library.service.BookService;
 import by.htp.library.service.EmployeeService;
 import by.htp.library.service.OrderService;
@@ -27,25 +27,21 @@ import by.htp.library.service.exception.ServiceException;
 import by.htp.library.util.ConfigManager;
 
 public class ToDashboardPageCommand extends Command {
-	protected static final Logger logger = LoggerFactory.getLogger(ToDashboardPageCommand.class);
+	private static final Logger logger = LoggerFactory.getLogger(ToDashboardPageCommand.class);
+	private ServiceFactory serviceFactory = ServiceFactory.getInstance();
+	private OrderService orderService = serviceFactory.getOrderService();
+	private BookService bookService = serviceFactory.getBookService();
+	private EmployeeService employeeService = serviceFactory.getEmployeeService();
+	private UserService userService = serviceFactory.getUserService();
 	private static final int LAST_USERS_COUNT = 3;
 	private static final int LAST_BOOKS_COUNT = 5;
 	private static final int LAST_ORDERS_COUNT = 5;
 	private static final String ORDERS_STATUS = "WAIT";
 
 	@Override
-	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		HttpSession session = request.getSession();
-
-		ServiceFactory serviceFactory = ServiceFactory.getInstance();
-		OrderService orderService = serviceFactory.getOrderService();
-		BookService bookService = serviceFactory.getBookService();
-		EmployeeService employeeService = serviceFactory.getEmployeeService();
-		UserService userService = serviceFactory.getUserService();
-
+	public void execute(HttpServletRequest request, HttpServletResponse response) throws ControllerException {
+		logger.info(request.getMethod() + " command name : " + request.getParameter(PARAM_COMMAND_NAME));
 		try {
-
 			List<Book> bookList = bookService.getAllBooks();
 			List<Employee> employeeList = employeeService.getAllEmployees();
 			List<User> userList = userService.getAllUsers();
@@ -55,7 +51,7 @@ public class ToDashboardPageCommand extends Command {
 			List<Order> orderList = orderService.getAllOrders();
 			List<Order> orderListWait = orderService.getOrdersByStatus(ORDERS_STATUS);
 
-			int emplId = (Integer) session.getAttribute(ATTR_USER_ID);
+			int emplId = (Integer) request.getSession().getAttribute(ATTR_USER_ID);
 			List<Order> orderLastList = orderService.getLastOrdersByEmployeeId(emplId, LAST_ORDERS_COUNT);
 
 			request.setAttribute(ATTR_BOOK_COUNT, bookList.size());
@@ -76,10 +72,12 @@ public class ToDashboardPageCommand extends Command {
 			request.setAttribute(ATTR_EMPLOYEE_MAP, employeeMap);
 			request.setAttribute(ATTR_USER_MAP, userMap);
 
-		} catch (ServiceException e) {
-			e.printStackTrace();
-		}
+			request.getRequestDispatcher(
+					request.getSession().getAttribute(ATTR_MENU_PATH) + ConfigManager.getProperty(FORWARD_DASHBOARD))
+					.forward(request, response);
 
-		request.getRequestDispatcher(session.getAttribute(ATTR_MENU_PATH) + ConfigManager.getProperty(FORWARD_DASHBOARD)).forward(request, response);
+		} catch (ServletException | ServiceException | IOException e) {
+			throw new ControllerException(e);
+		}
 	}
 }

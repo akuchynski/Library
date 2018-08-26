@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import by.htp.library.controller.command.Command;
 import by.htp.library.controller.command.CommandFactory;
+import by.htp.library.controller.exception.ControllerException;
 
 public class FrontController extends HttpServlet {	
 	private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
@@ -36,9 +37,12 @@ public class FrontController extends HttpServlet {
 
 	private void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+		try{
 		Command command = CommandFactory.getCommand(request);
 		command.execute(request, response);
 		logger.info(request.getMethod() + " : command class: " + command.getClass().getSimpleName());
+		} catch (ControllerException e) {
+			logger.error("Controller command error");
+		}
 	}
 }

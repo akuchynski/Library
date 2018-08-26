@@ -16,6 +16,7 @@ import java.util.TimeZone;
 
 import by.htp.library.bean.Order;
 import by.htp.library.dao.OrderDAO;
+import by.htp.library.dao.exception.DAOException;
 import by.htp.library.dao.util.ConnectionPool;
 import by.htp.library.util.STATUS;
 
@@ -31,7 +32,7 @@ public class OrderDAOImpl implements OrderDAO {
 	private static final String SQL_DELETE_ORDER_BY_ID = "DELETE FROM employee_book WHERE order_id = ?";
 
 	@Override
-	public void create(Order entity) {
+	public void create(Order entity) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 
@@ -48,7 +49,7 @@ public class OrderDAOImpl implements OrderDAO {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -56,7 +57,7 @@ public class OrderDAOImpl implements OrderDAO {
 	}
 
 	@Override
-	public Order read(int id) {
+	public Order read(int id) throws DAOException {
 		
 		Connection connection = ConnectionPool.getConnection();
 		Order order = new Order();
@@ -79,7 +80,7 @@ public class OrderDAOImpl implements OrderDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -88,7 +89,7 @@ public class OrderDAOImpl implements OrderDAO {
 	}
 
 	@Override
-	public List<Order> readAll() {
+	public List<Order> readAll() throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 		List<Order> orders = new ArrayList<>();
@@ -112,7 +113,7 @@ public class OrderDAOImpl implements OrderDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -121,7 +122,7 @@ public class OrderDAOImpl implements OrderDAO {
 	}
 
 	@Override
-	public List<Order> readOrdersByStatus(String status) {
+	public List<Order> readOrdersByStatus(String status) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 		List<Order> orders = new ArrayList<>();
@@ -146,7 +147,7 @@ public class OrderDAOImpl implements OrderDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -155,7 +156,7 @@ public class OrderDAOImpl implements OrderDAO {
 	}
 
 	@Override
-	public List<Order> readOrdersByEmployeeId(int emplId) {
+	public List<Order> readOrdersByEmployeeId(int emplId) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 		List<Order> orders = new ArrayList<>();
@@ -180,7 +181,7 @@ public class OrderDAOImpl implements OrderDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -188,7 +189,7 @@ public class OrderDAOImpl implements OrderDAO {
 		return orders;
 	}
 
-	public List<Order> readLastOrdersByEmployeeId(int emplId, int count) {
+	public List<Order> readLastOrdersByEmployeeId(int emplId, int count) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 		List<Order> orders = new ArrayList<>();
@@ -214,7 +215,7 @@ public class OrderDAOImpl implements OrderDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -223,7 +224,7 @@ public class OrderDAOImpl implements OrderDAO {
 	}
 
 	@Override
-	public void update(int id, Order entity) {
+	public void update(int id, Order entity) throws DAOException {
 		
 		Connection connection = ConnectionPool.getConnection();
 
@@ -243,7 +244,7 @@ public class OrderDAOImpl implements OrderDAO {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);
@@ -251,7 +252,7 @@ public class OrderDAOImpl implements OrderDAO {
 	}
 
 	@Override
-	public void delete(int id) {
+	public void delete(int id) throws DAOException {
 
 		Connection connection = ConnectionPool.getConnection();
 
@@ -263,7 +264,7 @@ public class OrderDAOImpl implements OrderDAO {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DAOException("DAO error", e);
 		}
 
 		ConnectionPool.putConnection(connection);

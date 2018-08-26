@@ -2,7 +2,6 @@ package by.htp.library.controller.command.authorization;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -12,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import by.htp.library.bean.User;
 import by.htp.library.controller.command.Command;
+import by.htp.library.controller.exception.ControllerException;
 import by.htp.library.service.EmployeeService;
 import by.htp.library.service.ServiceFactory;
 import by.htp.library.service.UserService;
@@ -19,39 +19,40 @@ import by.htp.library.service.exception.ServiceException;
 import by.htp.library.util.ConfigManager;
 
 public class LoginCommand extends Command {
-	protected static final Logger logger = LoggerFactory.getLogger(LoginCommand.class);
+	private static final Logger logger = LoggerFactory.getLogger(LoginCommand.class);
+	private ServiceFactory serviceFactory = ServiceFactory.getInstance();
+	private UserService userService = serviceFactory.getUserService();
+	private EmployeeService employeeService = serviceFactory.getEmployeeService();
 
 	@Override
-	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		HttpSession session = request.getSession();
-		ServiceFactory serviceFactory = ServiceFactory.getInstance();
-		UserService userService = serviceFactory.getUserService();
-		EmployeeService employeeService = serviceFactory.getEmployeeService();
-
-		String login = request.getParameter(PARAM_LOGIN);
-		String password = request.getParameter(PARAM_PASS);
-
+	public void execute(HttpServletRequest request, HttpServletResponse response) throws ControllerException {
+		logger.info(request.getMethod() + " command name : " + request.getParameter(PARAM_COMMAND_NAME));
 		try {
-			if (userService.userIsExist(login, password)) {
-				User currentUser = userService.getUserByLogin(login);
+			HttpSession session = request.getSession();
+			String login = request.getParameter(PARAM_LOGIN);
+			String password = request.getParameter(PARAM_PASS);
+			User currentUser = userService.getUserByLoginPassword(login, password);
+
+			if (currentUser == null) {
+				request.getSession().setAttribute("errorLogin", true);
+				response.sendRedirect(ConfigManager.getProperty(REDIRECT_INDEX));
+			} else {
 				session.setAttribute(ATTR_USER, currentUser);
 				session.setAttribute(ATTR_USER_ID, currentUser.getId());
 				session.setAttribute(ATTR_EMPLOYEE, employeeService.read(currentUser.getId()));
-
+				
 				if (currentUser.getRole().equals(ROLE_ADMIN)) {
 					session.setAttribute(ATTR_MENU_PATH, ConfigManager.getProperty(FORWARD_ADMIN));
 				} else if (currentUser.getRole().equals(ROLE_USER)) {
 					session.setAttribute(ATTR_MENU_PATH, ConfigManager.getProperty(FORWARD_USER));
 				} else {
-			        response.sendRedirect(ConfigManager.getProperty(REDIRECT_INDEX));
+					response.sendRedirect(ConfigManager.getProperty(REDIRECT_INDEX));
 				}
+				
+				response.sendRedirect(ConfigManager.getProperty(REDIRECT_DASHBOARD));
 			}
-		} catch (ServiceException e) {
-			e.printStackTrace();
+		} catch (ServiceException | IOException e) {
+			throw new ControllerException(e);
 		}
-
-		logger.info(request.getMethod() + " redirect - command : " + request.getParameter(PARAM_COMMAND_NAME));
-		response.sendRedirect(ConfigManager.getProperty(REDIRECT_DASHBOARD));
 	}
 }

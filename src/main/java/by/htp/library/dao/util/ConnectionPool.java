@@ -10,6 +10,8 @@ import java.util.concurrent.BlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import by.htp.library.dao.exception.DAOException;
+
 public class ConnectionPool {
 	private static final Logger logger = LoggerFactory.getLogger(ConnectionPool.class);
 
@@ -24,7 +26,7 @@ public class ConnectionPool {
 	private static String login = rb.getString("db.login");
 	private static String pass = rb.getString("db.pass");
 
-	static {
+	public static void initConnectionPool() throws DAOException {
 		try {
 			Class.forName(rb.getString("db.driver"));
 			for (int i = 0; i < POOL_SIZE; i++) {
@@ -32,28 +34,28 @@ public class ConnectionPool {
 			}
 			logger.info("Connection pool initialization");
 		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
+			throw new DAOException(e);
 		}
 	}
 
-	public static Connection getConnection() {
+	public static Connection getConnection() throws DAOException {
 		Connection connection = null;
 		try {
 			connection = connectionPool.take();
 			logger.info("Connection get");
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			throw new DAOException(e);
 		}
 		return connection;
 	}
 
-	public static void putConnection(Connection connection) {
+	public static void putConnection(Connection connection) throws DAOException {
 		if (connection != null) {
 			try {
 				connectionPool.put(connection);
 				logger.info("Connection put");
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				throw new DAOException(e);
 			}
 		}
 	}

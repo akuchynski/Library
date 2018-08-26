@@ -20,6 +20,8 @@ public interface UserService {
 	public boolean userIsExist(String login, String password) throws ServiceException;
 
 	public User getUserByLogin(String login) throws ServiceException;
+	
+	public User getUserByLoginPassword(String login, String password) throws ServiceException;
 
 	public List<User> getLastUsers(int count) throws ServiceException;
 
