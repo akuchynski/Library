@@ -27,7 +27,7 @@ public class AuthentificationFilter implements Filter {
 	public static final String REG_PAGE_COMMAND = "to_registration";
 	public static final String REG_COMMAND = "registration";
 	public static final String LOGOUT_COMMAND = "logout";
-	public static final String LANG_CHANGE_COMMAND = "lang_change";
+	public static final String LANG_CHANGE_COMMAND = "change_language";
 	public static final String AJAX_COMMANDS = "AJAX";
 	public static final String REDIRECT_INDEX = "index.jsp";
 	public static final String FORWARD_DEACTIVE = "forward.deactive";
