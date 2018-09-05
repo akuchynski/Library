@@ -1,5 +1,6 @@
 package by.htp.library.controller.command.authorization;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ public class LoginCommand extends Command {
 	private ServiceFactory serviceFactory = ServiceFactory.getInstance();
 	private UserService userService = serviceFactory.getUserService();
 	private EmployeeService employeeService = serviceFactory.getEmployeeService();
+	private static final String AVATAR_DIR = "assets\\images\\users\\";
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ControllerException {
@@ -37,9 +39,19 @@ public class LoginCommand extends Command {
 				request.getSession().setAttribute("errorLogin", true);
 				response.sendRedirect(ConfigManager.getProperty(REDIRECT_INDEX));
 			} else {
-				session.setAttribute(ATTR_USER, currentUser);
 				session.setAttribute(ATTR_USER_ID, currentUser.getId());
+				session.setAttribute(ATTR_USER, currentUser);
 				session.setAttribute(ATTR_EMPLOYEE, employeeService.read(currentUser.getId()));
+				
+				String appPath = request.getServletContext().getRealPath("");
+				String avatarPath = appPath + AVATAR_DIR + "avatar" + currentUser.getId() + ".jpg";
+				File file = new File(avatarPath);
+				
+				if (file.exists() && file.isFile()) {
+					session.setAttribute("avatarNumber", currentUser.getId());
+				} else {
+					session.setAttribute("avatarNumber", 0);
+				}
 				
 				if (currentUser.getRole().equals(ROLE_ADMIN)) {
 					session.setAttribute(ATTR_MENU_PATH, ConfigManager.getProperty(FORWARD_ADMIN));
@@ -48,7 +60,6 @@ public class LoginCommand extends Command {
 				} else {
 					response.sendRedirect(ConfigManager.getProperty(REDIRECT_INDEX));
 				}
-				
 				response.sendRedirect(ConfigManager.getProperty(REDIRECT_DASHBOARD));
 			}
 		} catch (ServiceException | IOException e) {

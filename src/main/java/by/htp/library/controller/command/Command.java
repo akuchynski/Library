@@ -51,6 +51,7 @@ public abstract class Command {
 	public static final String ATTR_BOOK_LIST = "bookList";
 	public static final String ATTR_EMPLOYEE_LIST = "employeeList";
 	public static final String ATTR_ORDER_LIST = "orderList";
+	public static final String ATTR_ORDER_LIST_EMPL = "orderListEmpl";
 	public static final String ATTR_USER_LIST = "userList";
 	public static final String ATTR_BOOK_MAP = "bookMap";
 	public static final String ATTR_EMPLOYEE_MAP = "employeeMap";

@@ -8,6 +8,7 @@ import by.htp.library.dao.OrderDAO;
 import by.htp.library.dao.exception.DAOException;
 import by.htp.library.service.OrderService;
 import by.htp.library.service.exception.ServiceException;
+import by.htp.library.util.STATUS;
 
 public class OrderServiceImpl implements OrderService {
 
@@ -43,6 +44,12 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public void update(int id, Order order) throws ServiceException {
 		try {
+			if (order.getStatus().equals(STATUS.RETURNED) && !orderDAO.read(id).getStatus().equals(STATUS.RETURNED)) {
+				orderDAO.returnOneBook(order.getBookId());
+			} else if ((order.getStatus().equals(STATUS.WAIT) || order.getStatus().equals(STATUS.DELIVERED))
+					&& orderDAO.read(id).getStatus().equals(STATUS.RETURNED)) {
+				orderDAO.takeOneBook(order.getBookId());
+			}
 			orderDAO.update(id, order);
 		} catch (DAOException e) {
 			throw new ServiceException(e);
@@ -52,6 +59,9 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public void delete(int id) throws ServiceException {
 		try {
+			if (!orderDAO.read(id).getStatus().equals(STATUS.RETURNED)) {
+				orderDAO.returnOneBook(orderDAO.read(id).getBookId());
+			}
 			orderDAO.delete(id);
 		} catch (DAOException e) {
 			throw new ServiceException(e);
@@ -62,6 +72,15 @@ public class OrderServiceImpl implements OrderService {
 	public List<Order> getOrdersByStatus(String status) throws ServiceException {
 		try {
 			return orderDAO.readOrdersByStatus(status);
+		} catch (DAOException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	@Override
+	public List<Order> getOrdersByEmployeeId(int emplId) throws ServiceException {
+		try {
+			return orderDAO.readOrdersByEmployeeId(emplId);
 		} catch (DAOException e) {
 			throw new ServiceException(e);
 		}

@@ -18,6 +18,8 @@ public interface OrderService {
 	public void delete(int id) throws ServiceException;
 
 	public List<Order> getOrdersByStatus(String status) throws ServiceException;
+	
+	public List<Order> getOrdersByEmployeeId(int emplId) throws ServiceException;
 
 	public List<Order> getLastOrdersByEmployeeId(int emplId, int count) throws ServiceException;
 

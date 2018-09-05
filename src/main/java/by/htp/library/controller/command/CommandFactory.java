@@ -12,6 +12,7 @@ import by.htp.library.controller.command.action.DeleteUserCommand;
 import by.htp.library.controller.command.action.EditBookCommand;
 import by.htp.library.controller.command.action.EditOrderCommand;
 import by.htp.library.controller.command.action.EditUserCommand;
+import by.htp.library.controller.command.action.UploadAvatarCommand;
 import by.htp.library.controller.command.ajax.AjaxBookFindCommand;
 import by.htp.library.controller.command.ajax.AjaxIdCheckCommand;
 import by.htp.library.controller.command.ajax.AjaxLoginCheckCommand;
@@ -67,6 +68,9 @@ public class CommandFactory {
 				break;	
 			case CHANGE_LANGUAGE:
 				command = new ChangeLanguageCommand();
+				break;
+			case UPLOAD_AVATAR:
+				command = new UploadAvatarCommand();
 				break;
 			case TO_PAGE:
 				command = new ToPageCommand();

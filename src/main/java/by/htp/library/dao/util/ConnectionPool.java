@@ -17,6 +17,8 @@ public class ConnectionPool {
 
 	private static final String DB_CONNECT_PROPERTY = "db_config";
 	private static final int POOL_SIZE = 10;
+	
+	public static final ConnectionPool instance = new ConnectionPool();
 
 	private static BlockingQueue<Connection> connectionPool = new ArrayBlockingQueue<Connection>(POOL_SIZE, true);
 

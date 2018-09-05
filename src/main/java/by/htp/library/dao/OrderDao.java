@@ -12,5 +12,9 @@ public interface OrderDAO extends BaseDAO<Order> {
 	public List<Order> readOrdersByEmployeeId(int emplId) throws DAOException;
 	
 	public List<Order> readLastOrdersByEmployeeId(int emplId, int count) throws DAOException;
+	
+	public void returnOneBook(int id) throws DAOException;
+	
+	public void takeOneBook(int id) throws DAOException;
 
 }

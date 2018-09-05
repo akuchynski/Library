@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import by.htp.library.bean.Order;
 import by.htp.library.controller.command.Command;
 import by.htp.library.controller.exception.ControllerException;
-import by.htp.library.service.BookService;
 import by.htp.library.service.OrderService;
 import by.htp.library.service.ServiceFactory;
 import by.htp.library.service.exception.ServiceException;
@@ -23,7 +22,6 @@ import by.htp.library.util.STATUS;
 public class EditOrderCommand extends Command {
 	private static final Logger logger = LoggerFactory.getLogger(EditOrderCommand.class);
 	private ServiceFactory serviceFactory = ServiceFactory.getInstance();
-	private BookService bookService = serviceFactory.getBookService();
 	private OrderService orderService = serviceFactory.getOrderService();
 
 	@Override
@@ -39,17 +37,10 @@ public class EditOrderCommand extends Command {
 			try {
 				order.setDate(format.parse(request.getParameter(PARAM_DATE)));
 			} catch (ParseException e) {
-				e.printStackTrace();
+				logger.info("Date error");
 			}
 			STATUS orderStatus = STATUS.valueOf(request.getParameter(PARAM_STATUS));
 			order.setStatus(orderStatus);
-
-			if (orderStatus.equals(STATUS.RETURNED) && !orderService.read(id).getStatus().equals(STATUS.RETURNED)) {
-				bookService.putOneBook(orderService.read(id).getBookId());
-			} else if ((orderStatus.equals(STATUS.WAIT) || orderStatus.equals(STATUS.DELIVERED))
-					&& orderService.read(id).getStatus().equals(STATUS.RETURNED)) {
-				bookService.takeOneBook(orderService.read(id).getBookId());
-			}
 			orderService.update(id, order);
 			
 			request.getSession().setAttribute("messageClass", "order-update-success");

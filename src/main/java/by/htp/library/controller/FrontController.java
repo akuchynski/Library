@@ -3,6 +3,7 @@ package by.htp.library.controller;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,7 +15,8 @@ import by.htp.library.controller.command.Command;
 import by.htp.library.controller.command.CommandFactory;
 import by.htp.library.controller.exception.ControllerException;
 
-public class FrontController extends HttpServlet {	
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, maxFileSize = 1024 * 1024 * 10, maxRequestSize = 1024 * 1024 * 50)
+public class FrontController extends HttpServlet {
 	private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
 	private static final long serialVersionUID = 1L;
 
@@ -27,20 +29,22 @@ public class FrontController extends HttpServlet {
 		super();
 	}
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		processRequest(request, response);
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		processRequest(request, response);
 	}
 
 	private void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		try{
-		Command command = CommandFactory.getCommand(request);
-		command.execute(request, response);
-		logger.info(request.getMethod() + " : command class: " + command.getClass().getSimpleName());
+		try {
+			Command command = CommandFactory.getCommand(request);
+			command.execute(request, response);
+			logger.info(request.getMethod() + " : command class: " + command.getClass().getSimpleName());
 		} catch (ControllerException e) {
 			logger.error("Controller command error");
 		}

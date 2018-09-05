@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import by.htp.library.bean.Book;
 import by.htp.library.bean.Employee;
 import by.htp.library.bean.Order;
+import by.htp.library.bean.User;
 import by.htp.library.controller.command.Command;
 import by.htp.library.controller.exception.ControllerException;
 import by.htp.library.service.BookService;
@@ -35,7 +36,9 @@ public class ToOrderListPageCommand extends Command {
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ControllerException {
 		logger.info(request.getMethod() + " command name : " + request.getParameter(PARAM_COMMAND_NAME));
 		try {
+			User currentUser = (User) request.getSession().getAttribute(ATTR_USER);
 			List<Order> orderList = orderService.getAllOrders();
+			List<Order> orderListEmpl = orderService.getOrdersByEmployeeId(currentUser.getId()) ;
 			List<Book> bookList = bookService.getAllBooks();
 			List<Employee> employeeList = employeeService.getAllEmployees();
 
@@ -44,6 +47,7 @@ public class ToOrderListPageCommand extends Command {
 					.collect(Collectors.toMap(Employee::getId, item -> item));
 
 			request.setAttribute(ATTR_ORDER_LIST, orderList);
+			request.setAttribute(ATTR_ORDER_LIST_EMPL, orderListEmpl);
 			request.setAttribute(ATTR_BOOK_MAP, bookMap);
 			request.setAttribute(ATTR_EMPLOYEE_MAP, employeeMap);
 
