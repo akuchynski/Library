@@ -29,6 +29,8 @@ public class ToBookListPageCommand extends Command {
 		try {
 			List<Book> bookList = bookService.getAllBooks();
 			request.setAttribute(ATTR_BOOK_LIST, bookList);
+			
+			request.getSession().setAttribute(ATTR_LAST_QUERY, request.getQueryString().toString());
 			request.getRequestDispatcher(
 					request.getSession().getAttribute(ATTR_MENU_PATH) + ConfigManager.getProperty(FORWARD_BOOK_LIST))
 					.forward(request, response);

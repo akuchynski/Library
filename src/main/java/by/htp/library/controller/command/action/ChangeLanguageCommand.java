@@ -22,8 +22,12 @@ public class ChangeLanguageCommand extends Command {
 		logger.info(request.getMethod() + " command name : " + request.getParameter(PARAM_COMMAND_NAME));
 		try {
 			request.getSession().setAttribute(ATTR_LANGUAGE, request.getParameter(PARAM_LOCAL));
-
-			response.sendRedirect(ConfigManager.getProperty(REDIRECT_DASHBOARD));
+			String lastQuery = String.valueOf(request.getSession().getAttribute(ATTR_LAST_QUERY));
+			if(lastQuery.equals("null")) {
+				response.sendRedirect(ConfigManager.getProperty(REDIRECT_INDEX));
+			} else {
+				response.sendRedirect(CONTROLLER_QUERY + lastQuery);
+			}
 		} catch (IOException e) {
 			throw new ControllerException(e);
 		}

@@ -7,6 +7,8 @@ import by.htp.library.dao.exception.DAOException;
 
 public interface EmployeeDAO extends BaseDAO<Employee> {
 
+	public List<Employee> readNotRegisteredEmployees() throws DAOException;
+
 	public List<Employee> readBySurname(String title) throws DAOException;
 
 	public int readIdEmployee(Employee employee) throws DAOException;

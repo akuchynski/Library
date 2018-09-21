@@ -17,6 +17,7 @@ public class EmployeeDAOImpl extends AbstractDAO implements EmployeeDAO {
 
 	private static final String SQL_CREATE_EMPLOYEE = "INSERT INTO employee (name, surname, year) VALUES (?, ?, ?)";
 	private static final String SQL_READ_EMPLOYEES = "SELECT * FROM employee";
+	private static final String SQL_READ_NOT_REG_EMPLOYEES = "SELECT * FROM employee WHERE emp_id NOT IN (SELECT user_id FROM user)";
 	private static final String SQL_READ_EMPLOYEES_BY_NAME_SURNAME = "SELECT emp_id, name, surname FROM employee WHERE (CONCAT(surname, ' ', name) LIKE ?) OR (CONCAT(name, ' ', surname) LIKE ?)";
 	private static final String SQL_READ_EMPLOYEE_BY_ID = "SELECT * FROM employee WHERE emp_id = ?";
 	private static final String SQL_READ_ID_BY_EMPLOYEE = "SELECT emp_id FROM employee WHERE name = ? AND surname = ? AND year = ?";
@@ -56,6 +57,36 @@ public class EmployeeDAOImpl extends AbstractDAO implements EmployeeDAO {
 		try {
 			connection = ConnectionPool.getConnection();
 			preparedStatement = connection.prepareStatement(SQL_READ_EMPLOYEES);
+			resultSet = preparedStatement.executeQuery();
+			employees = new ArrayList<>();
+
+			while (resultSet.next()) {
+				Employee employee = new Employee();
+				employee.setId(resultSet.getInt(1));
+				employee.setName(resultSet.getString(2));
+				employee.setSurname(resultSet.getString(3));
+				employee.setYear(resultSet.getInt(4));
+				employees.add(employee);
+			}
+		} catch (SQLException e) {
+			throw new DAOException("DAO error", e);
+		} finally {
+			close(resultSet, preparedStatement);
+			ConnectionPool.putConnection(connection);
+		}
+		return employees;
+	}
+	
+	public List<Employee> readNotRegisteredEmployees() throws DAOException {
+
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<Employee> employees = null;
+
+		try {
+			connection = ConnectionPool.getConnection();
+			preparedStatement = connection.prepareStatement(SQL_READ_NOT_REG_EMPLOYEES);
 			resultSet = preparedStatement.executeQuery();
 			employees = new ArrayList<>();
 

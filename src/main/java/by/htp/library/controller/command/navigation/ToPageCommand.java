@@ -31,9 +31,12 @@ public class ToPageCommand extends Command {
 		try {
 			List<Book> bookList = bookService.getAllBooks();
 			List<Employee> employeeList = employeeService.getAllEmployees();
+			List<Employee> employeeNotRegList = employeeService.getNotRegisteredEmployees();
 			request.setAttribute(ATTR_BOOK_LIST, bookList);
 			request.setAttribute(ATTR_EMPLOYEE_LIST, employeeList);
-
+			request.setAttribute(ATTR_EMPLOYEE_NOT_REG_LIST, employeeNotRegList);
+			
+			request.getSession().setAttribute(ATTR_LAST_QUERY, request.getQueryString().toString());
 			request.getRequestDispatcher(
 					request.getSession().getAttribute(ATTR_MENU_PATH) + request.getParameter(PARAM_PAGE_NAME) + JSP)
 					.forward(request, response);

@@ -13,15 +13,15 @@ import by.htp.library.controller.command.Command;
 import by.htp.library.controller.exception.ControllerException;
 import by.htp.library.util.ConfigManager;
 
-public class ToRegistrationPageCommand extends Command {
-	private static final Logger logger = LoggerFactory.getLogger(ToRegistrationPageCommand.class);
+public class ToLoginPageCommand extends Command {
+	private static final Logger logger = LoggerFactory.getLogger(ToLoginPageCommand.class);
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ControllerException {
 		logger.info(request.getMethod() + " command name : " + request.getParameter(PARAM_COMMAND_NAME));
 		try {
 			request.getSession().setAttribute(ATTR_LAST_QUERY, request.getQueryString().toString());
-			request.getRequestDispatcher(ConfigManager.getProperty(FORWARD_REGISTRATION)).forward(request, response);
+			request.getRequestDispatcher(ConfigManager.getProperty(FORWARD_LOGIN)).forward(request, response);
 		} catch (ServletException | IOException e) {
 			throw new ControllerException(e);
 		}

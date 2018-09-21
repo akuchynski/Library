@@ -24,6 +24,7 @@ public class AuthentificationFilter implements Filter {
 	public static final String ATTR_USER = "currentUser";
 	public static final String PARAM_COMMAND = "commandName";
 	public static final String LOGIN_COMMAND = "login";
+	public static final String LOGIN_PAGE_COMMAND = "to_login";
 	public static final String REG_PAGE_COMMAND = "to_registration";
 	public static final String REG_COMMAND = "registration";
 	public static final String LOGOUT_COMMAND = "logout";
@@ -49,9 +50,9 @@ public class AuthentificationFilter implements Filter {
 		User currentUser = (User) request.getSession().getAttribute(ATTR_USER);
 
 		if ((currentUser != null && currentUser.isActive()) || command.matches(LOGIN_COMMAND)
-				|| command.matches(REG_PAGE_COMMAND) || command.matches(REG_COMMAND)
-				|| command.matches(LANG_CHANGE_COMMAND) || command.contains(AJAX_COMMANDS)
-				|| command.matches(LOGOUT_COMMAND)) {
+				|| command.matches(LOGIN_PAGE_COMMAND) || command.matches(REG_PAGE_COMMAND)
+				|| command.matches(REG_COMMAND) || command.matches(LANG_CHANGE_COMMAND)
+				|| command.contains(AJAX_COMMANDS) || command.matches(LOGOUT_COMMAND)) {
 			chain.doFilter(req, res);
 		} else if (currentUser != null && !currentUser.isActive()) {
 			request.getSession().invalidate();

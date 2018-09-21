@@ -9,6 +9,9 @@ import by.htp.library.util.MessageManager;
 public abstract class Command {
 
 	public static final String ATTR_LAST_COMMAND = "lastCommand";
+	public static final String ATTR_LAST_FORWARD = "lastForward";
+	public static final String ATTR_LAST_QUERY = "lastQuery";
+	public static final String ATTR_LAST_PAGE_NAME = "lastPageName";
 	public static final String ATTR_MENU_PATH = "menuPath";
 	public static final String ATTR_USER = "currentUser";
 	public static final String ATTR_USER_ID = "currentUserId";
@@ -50,6 +53,7 @@ public abstract class Command {
 	public static final String ATTR_EDIT_EMPLOYEE = "editEmployee";
 	public static final String ATTR_BOOK_LIST = "bookList";
 	public static final String ATTR_EMPLOYEE_LIST = "employeeList";
+	public static final String ATTR_EMPLOYEE_NOT_REG_LIST = "employeeNotRegList";
 	public static final String ATTR_ORDER_LIST = "orderList";
 	public static final String ATTR_ORDER_LIST_EMPL = "orderListEmpl";
 	public static final String ATTR_USER_LIST = "userList";
@@ -63,8 +67,10 @@ public abstract class Command {
 
 	public static final String ATTR_BOOKS_REPORT = "emplBooksReport";
 	public static final String ATTR_BOOKS_DELAY_REPORT = "emplBooksDelayReport";
+	
+	public static final String CONTROLLER_QUERY = "controller?";
 
-	public static final String FORWARD_INDEX = "forward.index";
+	public static final String FORWARD_LOGIN = "forward.login";
 	public static final String FORWARD_REGISTRATION = "forward.registration";
 	public static final String FORWARD_TO_PAGE = "forward.to.page";
 	public static final String FORWARD_ADMIN = "forward.admin";
@@ -102,6 +108,7 @@ public abstract class Command {
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
 	public static final String ROLE_ADMIN = "ADMIN";
 	public static final String ROLE_USER = "USER";
+	public static final String PAGE_NAME = "&pageName=";
 	public static final String JSP = ".jsp";
 
 	private MessageManager messages = new MessageManager();

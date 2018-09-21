@@ -39,6 +39,7 @@ public class ToUserListPageCommand extends Command {
 			request.setAttribute(ATTR_EMPLOYEE_MAP, employeeMap);
 			request.setAttribute(ATTR_USER_LIST, userList);
 
+			request.getSession().setAttribute(ATTR_LAST_QUERY, request.getQueryString().toString());
 			request.getRequestDispatcher(
 					request.getSession().getAttribute(ATTR_MENU_PATH) + ConfigManager.getProperty(FORWARD_USER_LIST))
 					.forward(request, response);

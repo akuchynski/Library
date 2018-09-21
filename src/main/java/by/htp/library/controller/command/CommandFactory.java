@@ -22,6 +22,7 @@ import by.htp.library.controller.command.authorization.RegistrationCommand;
 import by.htp.library.controller.command.navigation.ToBookListPageCommand;
 import by.htp.library.controller.command.navigation.ToDashboardPageCommand;
 import by.htp.library.controller.command.navigation.ToErrorPageCommand;
+import by.htp.library.controller.command.navigation.ToLoginPageCommand;
 import by.htp.library.controller.command.navigation.ToBookEditPageCommand;
 import by.htp.library.controller.command.navigation.ToOrderEditPageCommand;
 import by.htp.library.controller.command.navigation.ToOrderListPageCommand;
@@ -74,6 +75,9 @@ public class CommandFactory {
 				break;
 			case TO_PAGE:
 				command = new ToPageCommand();
+				break;
+			case TO_LOGIN:
+				command = new ToLoginPageCommand();
 				break;
 			case TO_REGISTRATION:
 				command = new ToRegistrationPageCommand();

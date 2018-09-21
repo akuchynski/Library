@@ -30,9 +30,10 @@ public class ToBookEditPageCommand extends Command {
 			if (request.getParameter(PARAM_NUMBER) != null) {
 				editId = Integer.parseInt(request.getParameter(PARAM_NUMBER));
 			}
-
 			Book editBook = bookService.read(editId);
 			request.setAttribute(ATTR_EDIT_BOOK, editBook);
+			
+			request.getSession().setAttribute(ATTR_LAST_QUERY, request.getQueryString().toString());
 			request.getRequestDispatcher(
 					request.getSession().getAttribute(ATTR_MENU_PATH) + ConfigManager.getProperty(FORWARD_BOOK_EDIT))
 					.forward(request, response);

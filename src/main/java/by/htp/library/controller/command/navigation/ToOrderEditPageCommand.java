@@ -51,6 +51,7 @@ public class ToOrderEditPageCommand extends Command {
 			request.setAttribute(ATTR_EDIT_BOOK, editBook);
 			request.setAttribute(ATTR_EDIT_EMPLOYEE, editEmployee);
 			
+			request.getSession().setAttribute(ATTR_LAST_QUERY, request.getQueryString().toString());
 			request.getRequestDispatcher(
 					request.getSession().getAttribute(ATTR_MENU_PATH) + ConfigManager.getProperty(FORWARD_ORDER_EDIT))
 					.forward(request, response);

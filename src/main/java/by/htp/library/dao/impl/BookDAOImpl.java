@@ -246,7 +246,6 @@ public class BookDAOImpl extends AbstractDAO implements BookDAO {
 			connection = ConnectionPool.getConnection();
 			preparedStatement = connection.prepareStatement(SQL_DELETE_BOOK_BY_ID);
 			preparedStatement.setInt(1, id);
-
 			preparedStatement.executeUpdate();
 
 		} catch (SQLException e) {

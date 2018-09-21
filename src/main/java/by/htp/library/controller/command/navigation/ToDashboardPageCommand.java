@@ -72,6 +72,7 @@ public class ToDashboardPageCommand extends Command {
 			request.setAttribute(ATTR_EMPLOYEE_MAP, employeeMap);
 			request.setAttribute(ATTR_USER_MAP, userMap);
 
+			request.getSession().setAttribute(ATTR_LAST_QUERY, request.getQueryString().toString());
 			request.getRequestDispatcher(
 					request.getSession().getAttribute(ATTR_MENU_PATH) + ConfigManager.getProperty(FORWARD_DASHBOARD))
 					.forward(request, response);

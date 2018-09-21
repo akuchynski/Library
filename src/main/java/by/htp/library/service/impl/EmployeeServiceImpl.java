@@ -30,6 +30,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 			throw new ServiceException(e);
 		}
 	}
+	
+	@Override
+	public List<Employee> getNotRegisteredEmployees() throws ServiceException {
+		try {
+			return employeeDAO.readNotRegisteredEmployees();
+		} catch (DAOException e) {
+			throw new ServiceException(e);
+		}
+	}
 
 	@Override
 	public void create(Employee employee) throws ServiceException {

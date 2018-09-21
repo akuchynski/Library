@@ -40,6 +40,7 @@ public class ToUserEditPageCommand extends Command {
 			Employee editEmployee = employeeService.read(editId);
 			request.setAttribute(ATTR_EDIT_EMPLOYEE, editEmployee);
 
+			request.getSession().setAttribute(ATTR_LAST_QUERY, request.getQueryString().toString());
 			request.getRequestDispatcher(
 					request.getSession().getAttribute(ATTR_MENU_PATH) + ConfigManager.getProperty(FORWARD_USER_EDIT))
 					.forward(request, response);

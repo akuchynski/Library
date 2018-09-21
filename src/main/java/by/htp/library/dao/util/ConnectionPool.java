@@ -44,7 +44,6 @@ public class ConnectionPool {
 		Connection connection = null;
 		try {
 			connection = connectionPool.take();
-			logger.info("Connection get");
 		} catch (InterruptedException e) {
 			throw new DAOException(e);
 		}
@@ -55,7 +54,6 @@ public class ConnectionPool {
 		if (connection != null) {
 			try {
 				connectionPool.put(connection);
-				logger.info("Connection put");
 			} catch (InterruptedException e) {
 				throw new DAOException(e);
 			}
