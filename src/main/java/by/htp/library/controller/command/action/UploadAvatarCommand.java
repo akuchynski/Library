@@ -43,7 +43,7 @@ public class UploadAvatarCommand extends Command {
 				request.getSession().setAttribute("avatarNumber", id);
 				session.setAttribute("messageClass", "upload-file-success");
 			}
-			response.sendRedirect(ConfigManager.getProperty(REDIRECT_USER_LIST));
+			response.sendRedirect(ConfigManager.getProperty(REDIRECT_DASHBOARD));
 		} catch (ServletException | IOException e) {
 			throw new ControllerException(e);
 		}

@@ -25,6 +25,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 	private static final String SQL_READ_LAST_USERS = "SELECT * FROM user order by user_id desc limit ?";
 	private static final String SQL_UPDATE_USER_BY_ID = "UPDATE user SET email = ?, password = ?, active = ? WHERE user_id = ?";
 	private static final String SQL_DELETE_USER_BY_ID = "DELETE FROM user WHERE user_id = ?";
+	private static final String SQL_DELETE_ORDERS_BY_USER_ID = "DELETE FROM employee_book WHERE employee_id = ?";
 
 	@Override
 	public void create(User user) throws DAOException {
@@ -325,10 +326,24 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
 		try {
 			connection = ConnectionPool.getConnection();
+			connection.setAutoCommit(false);
+			
+			preparedStatement = connection.prepareStatement(SQL_DELETE_ORDERS_BY_USER_ID);
+			preparedStatement.setInt(1, id);
+			preparedStatement.executeUpdate();
+			close(preparedStatement);
+			
 			preparedStatement = connection.prepareStatement(SQL_DELETE_USER_BY_ID);
 			preparedStatement.setInt(1, id);
 			preparedStatement.executeUpdate();
+			
+			connection.commit();
 		} catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException ex) {
+				throw new DAOException("Rollback error", ex);
+			}
 			throw new DAOException("DAO error", e);
 		} finally {
 			close(preparedStatement);

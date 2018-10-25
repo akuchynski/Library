@@ -21,7 +21,7 @@ public enum CommandEnum {
     SHOW_DASHBOARD (UserTypeEnum.ALL),
     SHOW_BOOKS (UserTypeEnum.ALL),
 	SHOW_ORDERS (UserTypeEnum.ALL),
-    SHOW_USERS (UserTypeEnum.ALL),
+    SHOW_USERS (UserTypeEnum.ADMIN),
     SHOW_REPORT (UserTypeEnum.ADMIN),
 	SHOW_EMPLOYEES (UserTypeEnum.ALL),
 	ADD_BOOK (UserTypeEnum.ADMIN),

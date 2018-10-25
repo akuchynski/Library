@@ -102,8 +102,8 @@ public abstract class Command {
 	public static final String REDIRECT_ERROR = "redirect.error";
 
 	public static final String MSG_ILLEGAL_COMMAND = "error.illegal.command";
-	public static final String MSG_NOT_SUPPORTED_COMMAND = "not.supported.command";
-	public static final String MSG_NOT_ALLOWED = "not.allowed";
+	public static final String MSG_NOT_SUPPORTED_COMMAND = "error.not.supported.command";
+	public static final String MSG_NOT_ALLOWED = "error.not.allowed";
 
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
 	public static final String ROLE_ADMIN = "ADMIN";

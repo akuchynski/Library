@@ -35,7 +35,7 @@ public class LoginCommand extends Command {
 			String password = request.getParameter(PARAM_PASS);
 			User currentUser = userService.getUserByLoginPassword(login, password);
 
-			if (currentUser == null) {
+			if (currentUser.getLogin() == null) {
 				request.getSession().setAttribute("errorLogin", true);
 				response.sendRedirect(ConfigManager.getProperty(REDIRECT_INDEX));
 			} else {
